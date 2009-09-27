@@ -12,6 +12,7 @@ import config
 
 logger = logging.getLogger("blogofile.util")
 
+SLASHFIX = re.compile(r'/+')
 
 html_escape_table = {
     "&": "&amp;",
@@ -118,6 +119,8 @@ def blog_path_helper(path_parts):
     a_path = a_path + "/" + "/".join(path_parts)
     if not a_path.startswith("/"):
         a_path = "/"+a_path
+    a_path = SLASHFIX.sub('/', a_path)
+
     logger.debug("ABS path: "+a_path)
     return a_path
 
