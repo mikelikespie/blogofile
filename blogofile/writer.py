@@ -192,11 +192,11 @@ class Writer:
             page_posts = posts[post_num:post_num+config.blog_posts_per_page]
             post_num += config.blog_posts_per_page
             if page_num > 1:
-                prev_link = "../" + str(page_num - 1)
+                prev_link = util.blog_path_helper('%s/%s' % (root, page_num - 1))
             else:
                 prev_link = None
             if len(posts) > post_num:
-                next_link = "../" + str(page_num + 1)
+                next_link = util.blog_path_helper('%s/%s' % (root, page_num + 1))
             else:
                 next_link = None
             page_dir = os.path.join(self.blog_dir,root,str(page_num))
