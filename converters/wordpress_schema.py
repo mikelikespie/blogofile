@@ -29,10 +29,10 @@ Base = declarative_base(bind=engine)
 session = Session()
 
 class Post(Base):
-    __tablename__ = table_prefix + "wp_posts"
+    __tablename__ = table_prefix + "posts"
     __table_args__ = {'autoload': True}
     id = sa.Column("ID", sa.Integer, primary_key=True)
-    author_id = sa.Column("post_author", sa.ForeignKey(table_prefix+'wp_users.ID'))
+    author_id = sa.Column("post_author", sa.ForeignKey(table_prefix+'users.ID'))
     author = orm.relation("User", primaryjoin="Post.author_id == User.id")
     term_relationship = orm.relation("TermRelationship",
                                      primaryjoin="Post.id == TermRelationship.id")
@@ -67,14 +67,14 @@ class Post(Base):
         return site_url.rstrip("/") + "/" + structure.lstrip("/")
     
 class User(Base):
-    __tablename__ = table_prefix + "wp_users"
+    __tablename__ = table_prefix + "users"
     __table_args__ = {'autoload': True}
     id = sa.Column("ID", sa.Integer, primary_key=True)
     def __repr__(self):
         return "<User '%s'>" % self.user_nicename
 
 class Term(Base):
-    __tablename__ = table_prefix + "wp_terms"
+    __tablename__ = table_prefix + "terms"
     __table_args__ = {'autoload': True}
     id = sa.Column("term_id", sa.Integer, primary_key=True)
     
@@ -82,24 +82,24 @@ class Term(Base):
         return "<Term '%s'>" % self.name
 
 class TermTaxonomy(Base):
-    __tablename__ = table_prefix + "wp_term_taxonomy"
+    __tablename__ = table_prefix + "term_taxonomy"
     __table_args__ = {'autoload': True}
     id = sa.Column('term_taxonomy_id', primary_key=True)
-    term_id = sa.Column("term_id", sa.ForeignKey(table_prefix+"wp_terms.term_id"))
+    term_id = sa.Column("term_id", sa.ForeignKey(table_prefix+"terms.term_id"))
     term = orm.relation("Term", primaryjoin="Term.id == TermTaxonomy.term_id")
     
 class TermRelationship(Base):
-    __tablename__ = table_prefix + "wp_term_relationships"
+    __tablename__ = table_prefix + "term_relationships"
     __table_args__ = {'autoload': True}
-    id = sa.Column('object_id', sa.ForeignKey(table_prefix+"wp_posts.ID"),
+    id = sa.Column('object_id', sa.ForeignKey(table_prefix+"posts.ID"),
                    primary_key=True)
     taxonomy_id = sa.Column("term_taxonomy_id", sa.ForeignKey(
-            table_prefix+"wp_term_taxonomy.term_id"), primary_key=True)
+            table_prefix+"term_taxonomy.term_id"), primary_key=True)
     taxonomy = orm.relation("TermTaxonomy", primaryjoin=
                             "TermTaxonomy.id == TermRelationship.taxonomy_id")
 
 class WordpressOptions(Base):
-    __tablename__ = table_prefix + "wp_options"
+    __tablename__ = table_prefix + "options"
     __table_args__ = {'autoload': True}
                             
 def get_published_posts(blog_id=0):
